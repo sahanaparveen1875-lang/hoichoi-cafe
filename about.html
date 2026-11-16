@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us | Hoichoi Cafe - Our Story, Mission & Ambiance</title>
+  <meta name="description" content="Discover the story behind Hoichoi Cafe in Chatterjeehut, Shibpur, Howrah. Learn about our passion for handcrafted momos, artisanal pizzas, warm hospitality, and community hangout vibe.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Phosphor Icons -->
+  <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+  <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+  
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Top Announcement Bar -->
+  <div class="announcement-bar">
+    <div class="container announcement-content">
+      <div class="announcement-left">
+        <span class="live-dot"></span>
+        <span id="liveStatusText">Open Now • Closes 11:00 PM</span>
+        <span class="sep">•</span>
+        <span class="tag-pill">Community First</span>
+        <span>Chatterjeehut, 710 Shibpur Road • 4.1 ★ (126 Reviews)</span>
+      </div>
+      <div class="announcement-right">
+        <span class="promo-code">Use code <strong id="copyCoupon">HOICHOI10</strong> for 10% off</span>
+        <div class="social-mini">
+          <a href="contact.html" title="View Opening Hours"><i class="ph ph-clock"></i></a>
+          <a href="https://maps.google.com/maps?rlz=1C1QRVC_enIN1239IN1239&udm&fvr=1&pvq=Cg0vZy8xMXQ4Mm03dnJ3IhoKFGNhZmUgd2l0aG91dCB3ZWJzaXRlEAIYAw&lqi=ChRjYWZlIHdpdGhvdXQgd2Vic2l0ZUj71c-poLmAgAhaHhAAEAEQAhgAIhRjYWZlIHdpdGhvdXQgd2Vic2l0ZZIBBGNhZmU&vet=10CAAQoqAOahcKEwjg4t6H-IuYAxUAAAAAHQAAAAAQDw..i&cs=0&um=1&ie=UTF-8&fb=1&gl=in&sa=X&ftid=0x3a02791e9f2cd5b3:0xe5c4fc4b0a69f94d" target="_blank" rel="noopener" title="Google Maps"><i class="ph ph-map-pin"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header / Navigation -->
+  <header class="site-header" id="header">
+    <div class="container header-container">
+      <a href="index.html" class="brand-logo" aria-label="Hoichoi Cafe Home">
+        <div class="logo-mark">
+          <i class="ph ph-coffee"></i>
+          <span class="steam-ring"></span>
+        </div>
+        <div class="logo-text">
+          <span class="brand-name">HOICHOI</span>
+          <span class="brand-sub">হৈচৈ ক্যাফে • HOWRAH</span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation Links -->
+      <nav class="nav-menu" id="navMenu">
+        <ul class="nav-list">
+          <li><a href="index.html" class="nav-link">Home</a></li>
+          <li><a href="menu.html" class="nav-link">Menu</a></li>
+          <li><a href="about.html" class="nav-link active">About Us</a></li>
+          <li><a href="gallery.html" class="nav-link">Gallery</a></li>
+          <li><a href="reservations.html" class="nav-link">Reservations</a></li>
+          <li><a href="contact.html" class="nav-link">Contact</a></li>
+        </ul>
+      </nav>
+
+      <!-- Action Utilities -->
+      <div class="header-actions">
+        <!-- Ambient Sound Player Toggle -->
+        <button class="icon-btn" id="soundToggle" title="Toggle cozy cafe ambient sound" aria-label="Toggle cafe ambiance audio">
+          <i class="ph ph-speaker-slash" id="soundIcon"></i>
+          <span class="audio-label">Ambiance</span>
+        </button>
+
+        <!-- Theme Toggle -->
+        <button class="icon-btn" id="themeToggle" title="Switch Theme (Dark Roast / Warm Cream)" aria-label="Toggle Dark or Light theme">
+          <i class="ph ph-sun" id="themeIcon"></i>
+        </button>
+
+        <!-- Cart Trigger Button -->
+        <button class="cart-trigger" id="cartTrigger" aria-label="View Shopping Cart">
+          <i class="ph ph-shopping-bag"></i>
+          <span class="cart-label">Cart</span>
+          <span class="cart-count" id="cartCount">0</span>
+        </button>
+
+        <!-- Reservation CTA -->
+        <a href="reservations.html" class="btn btn-primary btn-sm header-cta">Book Table</a>
+
+        <!-- Mobile Menu Toggle Button -->
+        <button class="mobile-toggle" id="mobileMenuToggle" aria-label="Toggle navigation menu">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer Menu Overlay -->
+  <div class="mobile-drawer" id="mobileDrawer">
+    <div class="drawer-header">
+      <div class="brand-logo">
+        <div class="logo-mark"><i class="ph ph-coffee"></i></div>
+        <div class="logo-text">
+          <span class="brand-name">HOICHOI</span>
+          <span class="brand-sub">হৈচৈ ক্যাফে</span>
+        </div>
+      </div>
+      <button class="close-btn" id="mobileCloseBtn" aria-label="Close menu">&times;</button>
+    </div>
+    <ul class="mobile-nav-list">
+      <li><a href="index.html" class="mobile-nav-link"><i class="ph ph-house"></i> Home</a></li>
+      <li><a href="menu.html" class="mobile-nav-link"><i class="ph ph-fork-knife"></i> Full Menu</a></li>
+      <li><a href="about.html" class="mobile-nav-link active"><i class="ph ph-info"></i> Our Story</a></li>
+      <li><a href="gallery.html" class="mobile-nav-link"><i class="ph ph-image"></i> Photo Gallery</a></li>
+      <li><a href="reservations.html" class="mobile-nav-link"><i class="ph ph-calendar-check"></i> Book a Table</a></li>
+      <li><a href="contact.html" class="mobile-nav-link"><i class="ph ph-map-pin"></i> Hours & Contact</a></li>
+    </ul>
+    <div class="drawer-footer">
+      <a href="reservations.html" class="btn btn-primary btn-block">Reserve a Table</a>
+      <div class="drawer-info" style="margin-top: 1rem;">
+        <p><i class="ph ph-map-pin"></i> Chatterjeehut, 710 Shibpur Rd, Howrah</p>
+        <p><i class="ph ph-phone"></i> 091236 17586</p>
+      </div>
+    </div>
+  </div>
+  <div class="drawer-backdrop" id="drawerBackdrop"></div>
+
+  <!-- PAGE HERO BANNER -->
+  <section class="page-hero">
+    <div class="container page-hero-container">
+      <div class="page-badge">
+        <i class="ph-fill ph-heart"></i> Our Story & Soul • Chatterjeehut, Shibpur
+      </div>
+      <h1 class="page-title">The Story of Hoichoi Cafe</h1>
+      <p class="page-subtitle">
+        Where Howrah comes together for warm smiles, unforgettable momos, and lively neighborhood conversations.
+      </p>
+      <nav class="breadcrumb-nav">
+        <a href="index.html">Home</a>
+        <span>/</span>
+        <span class="current">About Us</span>
+      </nav>
+    </div>
+  </section>
+
+  <!-- CHAPTER 1: THE STORY & INTRODUCTION -->
+  <section class="about-section">
+    <div class="container">
+      <div class="about-grid-2col">
+        <div class="about-visual">
+          <img src="https://images.unsplash.com/photo-1521017432531-fbd92d768814?q=80&w=900&auto=format&fit=crop" alt="Friends having a joyful conversation at Hoichoi Cafe">
+          <div class="about-floating-card">
+            <div class="rating-stars">★★★★★</div>
+            <div class="rating-text">"Staff behaviour & Ambience also Good"</div>
+            <strong style="font-size: 0.82rem; margin-top: 0.25rem; display: block;">— Subhajit D. (Google Review)</strong>
+          </div>
+        </div>
+
+        <div class="about-content">
+          <div class="section-tag"><i class="ph-fill ph-book-open"></i> The Spirit of "Hoichoi"</div>
+          <h2 style="font-family: var(--font-heading); font-size: 2.3rem; margin: 0.75rem 0 1.25rem; line-height: 1.25;">
+            What Does <span class="text-accent italic">"Hoichoi"</span> Mean to Us?
+          </h2>
+          <p style="color: var(--text-secondary); margin-bottom: 1rem; line-height: 1.7;">
+            In Bengali culture, <strong>"Hoichoi" (হৈচৈ)</strong> is an untranslatable emotion. It stands for the sweet commotion of lively laughter, fiery friendly debates over steaming tea, the clinking of spoons, and the warmth of sharing snacks across the table with your closest companions.
+          </p>
+          <p style="color: var(--text-secondary); margin-bottom: 1rem; line-height: 1.7;">
+            Located at <strong>710 Shibpur Road, Chatterjeehut, Howrah</strong>, Hoichoi Cafe was founded with a singular dream: to give our local neighborhood a cozy, youthful, and vibrant sanctuary where good people could eat extraordinary food without worrying about exorbitant prices.
+          </p>
+          <p style="color: var(--text-secondary); line-height: 1.7;">
+            From students dropping in after classes to families sharing an evening pizza, we have grown into one of Howrah's most beloved hangout destinations, earning a proud <strong>4.1 rating over 126+ verified Google reviews</strong>.
+          </p>
+        </div>
+      </div>
+
+      <!-- KEY STATS RIBBON -->
+      <div class="stats-ribbon" style="border-radius: var(--radius-lg); margin: 3rem 0;">
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-num">4.1 ★</div>
+            <div class="stat-label">Google Rating</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num">126+</div>
+            <div class="stat-label">Verified Reviews</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num">₹200–400</div>
+            <div class="stat-label">Pocket-Friendly Avg</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num">100%</div>
+            <div class="stat-label">Fresh & Halal Chicken</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHAPTER 2: OUR MISSION & VALUES -->
+      <div style="margin-top: 5rem;">
+        <div class="section-header text-center">
+          <div class="section-tag"><i class="ph-fill ph-compass"></i> Guiding Principles</div>
+          <h2 class="section-title">Our Mission & Core Values</h2>
+          <p class="section-subtitle">Every dish we roll, steam, and bake is rooted in these four commitments.</p>
+        </div>
+
+        <div class="values-grid">
+          <!-- Value 1 -->
+          <div class="value-card">
+            <div class="value-icon-box"><i class="ph ph-sparkle"></i></div>
+            <h3>Uncompromised Freshness</h3>
+            <p>
+              We source tender chicken and farm-crisp produce daily. Our momos are hand-folded fresh and our 6-inch pizza dough is stretched on order.
+            </p>
+          </div>
+
+          <!-- Value 2 -->
+          <div class="value-card">
+            <div class="value-icon-box"><i class="ph ph-wallet"></i></div>
+            <h3>Pocket-Friendly Luxury</h3>
+            <p>
+              Gourmet cafe food shouldn't be a rare luxury. With an average spend of ₹200–400 per person, everyone can indulge in top-tier café flavors.
+            </p>
+          </div>
+
+          <!-- Value 3 -->
+          <div class="value-card">
+            <div class="value-icon-box"><i class="ph ph-smiley"></i></div>
+            <h3>Genuine Hospitality</h3>
+            <p>
+              Our team treats every guest like old family friends. Reviewers frequently celebrate our attentive service and welcoming staff demeanor.
+            </p>
+          </div>
+
+          <!-- Value 4 -->
+          <div class="value-card">
+            <div class="value-icon-box"><i class="ph ph-armchair"></i></div>
+            <h3>Cozy Neighborhood Soul</h3>
+            <p>
+              An intimate, air-conditioned escape from the traffic of Shibpur Road, complete with soothing music, ambient lighting, and positive energy.
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CHAPTER 3: OUR SPECIALITY SHOWCASE -->
+  <section class="specialities-showcase">
+    <div class="container">
+      <div class="section-header text-center">
+        <div class="section-tag"><i class="ph-fill ph-cooking-pot"></i> What We Excel At</div>
+        <h2 class="section-title">Our Culinary Specialities</h2>
+        <p class="section-subtitle">The signature creations that define the Hoichoi Cafe experience.</p>
+      </div>
+
+      <div class="specialities-grid">
+        <!-- Spec 1: Momos -->
+        <div class="spec-card">
+          <div class="spec-image">
+            <img src="https://images.unsplash.com/photo-1563245372-f21724e3856d?q=80&w=800&auto=format&fit=crop" alt="Cheese Chicken Baked Momo">
+          </div>
+          <div class="spec-content">
+            <h3>Handcrafted Momos</h3>
+            <p>
+              From crispy golden-fried dumplings served with Kolkata chili-garlic chutney to our signature melted Cheese Baked Momos and smoky Royal BBQ momos, we elevate this classic street food to an artisanal level.
+            </p>
+          </div>
+        </div>
+
+        <!-- Spec 2: Pizzas -->
+        <div class="spec-card">
+          <div class="spec-image">
+            <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=800&auto=format&fit=crop" alt="Hoichoi Chicken Chef Special Pizza">
+          </div>
+          <div class="spec-content">
+            <h3>Artisanal 6-Inch Pizzas</h3>
+            <p>
+              Personal 6-inch pan crusts baked with rich San Marzano tomato-herb sauce, premium stretchy mozzarella, and succulent toppings like Chef Special Chicken, Peri Peri spice, and Barbecue chicken.
+            </p>
+          </div>
+        </div>
+
+        <!-- Spec 3: Coolers & Coffee -->
+        <div class="spec-card">
+          <div class="spec-image">
+            <img src="https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=800&auto=format&fit=crop" alt="Blue Heaven Mocktail and Hoichoi Cold Coffee">
+          </div>
+          <div class="spec-content">
+            <h3>Barista Brews & Mocktails</h3>
+            <p>
+              Sip on our crowd-favorite Blue Heaven Mocktail with mint & lime, thick and creamy Hoichoi Cold Coffee with chocolate drizzle, Cold Velvet with jelly, or steaming Assam Special spiced chai.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHAPTER 4: CAFE ATMOSPHERE & AMBIANCE -->
+  <section class="about-section" style="padding: 5rem 0;">
+    <div class="container">
+      <div class="about-grid-2col reverse">
+        <div class="about-visual">
+          <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=900&auto=format&fit=crop" alt="Cozy Cafe Atmosphere at Hoichoi Cafe">
+          <div class="about-floating-card">
+            <div class="rating-stars">★★★★☆</div>
+            <div class="rating-text">"Cozy place for hangout with friends and family, though space is bit short"</div>
+            <strong style="font-size: 0.82rem; margin-top: 0.25rem; display: block;">— Anirban S. (Google Review)</strong>
+          </div>
+        </div>
+
+        <div class="about-content">
+          <div class="section-tag"><i class="ph-fill ph-coffee"></i> The Atmosphere</div>
+          <h2 style="font-family: var(--font-heading); font-size: 2.3rem; margin: 0.75rem 0 1.25rem; line-height: 1.25;">
+            Intimate, Cozy & Filled with Warmth
+          </h2>
+          <p style="color: var(--text-secondary); margin-bottom: 1rem; line-height: 1.7;">
+            As our guests often point out in their reviews, while our space is cozy and intimate, that compactness is precisely what gives Hoichoi Cafe its warm, close-knit charm. You can smell the freshly melted cheese and stone-baked pizza crusts right from your seat.
+          </p>
+          <p style="color: var(--text-secondary); margin-bottom: 1rem; line-height: 1.7;">
+            Soft amber lighting casts a relaxing glow over our tables, gentle music sets the background rhythm, and comfortable seating makes you feel right at home. Guests typically spend between <strong>10 to 45 minutes</strong> here catching up over snacks, discussing university projects, or taking a quick mindful break.
+          </p>
+          <div style="display: flex; gap: 1rem; margin-top: 1.75rem; flex-wrap: wrap;">
+            <a href="gallery.html" class="btn btn-primary">
+              <i class="ph ph-image"></i> View Gallery Photos
+            </a>
+            <a href="reservations.html" class="btn btn-outline">
+              <i class="ph ph-calendar-check"></i> Book Your Table
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA BANNER -->
+  <section style="background: linear-gradient(135deg, rgba(32, 24, 18, 0.95), rgba(18, 13, 9, 0.95)); border-top: 1px solid var(--border-accent); border-bottom: 1px solid var(--border-accent); padding: 4.5rem 0; text-align: center;">
+    <div class="container">
+      <h2 style="font-family: var(--font-heading); font-size: 2.2rem; margin-bottom: 1rem;">Experience the Hoichoi Warmth Firsthand</h2>
+      <p style="color: var(--text-secondary); max-width: 620px; margin: 0 auto 2rem; font-size: 1.05rem; line-height: 1.6;">
+        Stop by Chatterjeehut Shibpur today or reserve your table in advance. We can't wait to welcome you with hot momos and chilled coffee!
+      </p>
+      <div style="display: flex; justify-content: center; gap: 1.25rem; flex-wrap: wrap;">
+        <a href="reservations.html" class="btn btn-primary btn-lg">Reserve a Table Now</a>
+        <a href="menu.html" class="btn btn-outline btn-lg">Explore Full Menu</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- SITE FOOTER -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col brand-col">
+          <div class="brand-logo footer-logo">
+            <div class="logo-mark"><i class="ph ph-coffee"></i></div>
+            <div class="logo-text">
+              <span class="brand-name">HOICHOI</span>
+              <span class="brand-sub">হৈচৈ ক্যাফে • HOWRAH</span>
+            </div>
+          </div>
+          <p class="footer-desc">
+            Cozy cafe offering flavorful momos and varied food options at reasonable prices. A warm community hangout in Shibpur.
+          </p>
+          <div class="footer-rating-pill">
+            <span style="color: #f59e0b;">★ 4.1</span>
+            <span>(126 Google Reviews)</span>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4 class="footer-heading">Quick Navigation</h4>
+          <ul class="footer-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="menu.html">Explore Menu</a></li>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="gallery.html">Photo Gallery</a></li>
+            <li><a href="reservations.html">Reserve Table</a></li>
+            <li><a href="contact.html">Contact & Directions</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4 class="footer-heading">Our Highlights</h4>
+          <ul class="footer-links">
+            <li><a href="menu.html">Cheese Baked Momos</a></li>
+            <li><a href="menu.html">Chicken Royal BBQ Momo</a></li>
+            <li><a href="menu.html">Chef Special 6" Pizza</a></li>
+            <li><a href="menu.html">Blue Heaven Mocktail</a></li>
+            <li><a href="menu.html">Hoichoi Cold Coffee</a></li>
+            <li><a href="menu.html">Fish Fingers 4 Pcs</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4 class="footer-heading">Visit Us</h4>
+          <p class="footer-address">
+            <i class="ph ph-map-pin"></i> Chatterjeehut, 710 Shibpur Rd, Naora, Shibpur, Howrah, WB 711104
+          </p>
+          <p class="footer-phone">
+            <i class="ph ph-phone"></i> <a href="tel:09123617586">091236 17586</a>
+          </p>
+          <p class="footer-hours">
+            <i class="ph ph-clock"></i> Daily: 11:00 AM – 11:00 PM
+          </p>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2026 Hoichoi Cafe (হৈচৈ ক্যাফে). All rights reserved.</p>
+        <p class="footer-credit">Handcrafted with care for food lovers in Howrah & Kolkata.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- SLIDE-OUT CART DRAWER -->
+  <div class="cart-drawer" id="cartDrawer">
+    <div class="cart-header">
+      <div class="cart-title-wrap">
+        <i class="ph ph-shopping-bag"></i>
+        <h3>Your Order</h3>
+        <span class="cart-items-count-badge" id="cartHeaderCount">0 items</span>
+      </div>
+      <div style="display: flex; gap: 0.5rem; align-items: center;">
+        <button class="icon-btn-sm" id="clearCartBtn" title="Clear Cart"><i class="ph ph-trash"></i></button>
+        <button class="close-btn" id="closeCartBtn" aria-label="Close cart">&times;</button>
+      </div>
+    </div>
+
+    <!-- Order Type Selector -->
+    <div class="order-type-selector">
+      <button class="type-pill active" data-type="pickup">Takeaway / Pickup</button>
+      <button class="type-pill" data-type="dinein">Dine-in</button>
+      <button class="type-pill" data-type="delivery">Local Delivery</button>
+    </div>
+
+    <!-- Cart Items Scroll List -->
+    <div class="cart-items-list" id="cartItemsList">
+      <!-- Injected by app.js -->
+    </div>
+
+    <!-- Cart Footer & Calculations -->
+    <div class="cart-footer">
+      <!-- Promo Code Field -->
+      <div class="promo-box">
+        <input type="text" id="promoCodeInput" placeholder="Promo code (e.g. HOICHOI10)" aria-label="Promo code">
+        <button class="btn btn-sm btn-outline" id="applyPromoBtn">Apply</button>
+      </div>
+
+      <!-- Tip Selector -->
+      <div class="tip-section">
+        <span class="tip-label">Kitchen Team Tip:</span>
+        <div class="tip-pills">
+          <button class="tip-pill active" data-tip="0">0%</button>
+          <button class="tip-pill" data-tip="5">5%</button>
+          <button class="tip-pill" data-tip="10">10%</button>
+        </div>
+      </div>
+
+      <!-- Price Breakdown -->
+      <div class="pricing-summary">
+        <div class="summary-line">
+          <span>Subtotal</span>
+          <span id="cartSubtotal">₹0</span>
+        </div>
+        <div class="summary-line" id="discountRow" style="display: none; color: #4ade80;">
+          <span>Discount (HOICHOI10)</span>
+          <span id="cartDiscount">-₹0</span>
+        </div>
+        <div class="summary-line">
+          <span>Tip</span>
+          <span id="cartTip">₹0</span>
+        </div>
+        <div class="summary-line total-line">
+          <span>Total Payable</span>
+          <span id="cartTotal">₹0</span>
+        </div>
+      </div>
+
+      <button class="btn btn-primary btn-block btn-lg" id="checkoutBtn">
+        <span>Proceed to Checkout</span>
+        <i class="ph ph-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- CHECKOUT SUCCESS MODAL -->
+  <div class="modal-backdrop" id="checkoutSuccessModal">
+    <div class="checkout-card glassmorphism">
+      <div class="checkout-badge-icon"><i class="ph-fill ph-check-circle"></i></div>
+      <h2 style="font-family: var(--font-heading); margin-bottom: 0.5rem;">Order Received!</h2>
+      <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+        Thank you for ordering at Hoichoi Cafe. Your order reference code is:
+      </p>
+      <div class="order-ref-pill" id="orderReferenceCode" style="font-size: 1.4rem; font-weight: 700; letter-spacing: 0.1em; color: var(--accent-light); margin-bottom: 1rem;">
+        #HC-5421
+      </div>
+      <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.5rem;">
+        Total: <strong id="modalOrderTotal" style="color: var(--text-primary);">₹0</strong> • Estimated preparation time: 15–20 minutes. Please present this code at our counter at Chatterjeehut.
+      </p>
+      <button class="btn btn-primary" id="closeOrderSuccessBtn">Awesome, Got It!</button>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Application Script -->
+  <script src="app.js"></script>
+</body>
+</html>
