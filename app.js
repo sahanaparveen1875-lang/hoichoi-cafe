@@ -2,9 +2,21 @@
  * ==========================================================================
  * HOICHOI CAFÉ - MULTI-PAGE APPLICATION CORE & STATE ENGINE
  * Chatterjeehut, 710 Shibpur Rd, Naora, Shibpur, Howrah, West Bengal 711104
- * Contact: 091236 17586 | Open Daily: 11:00 AM - 11:00 PM
+ * Owner Contact & WhatsApp: +91 7439844855 | Open Daily: 11:00 AM - 11:00 PM
  * ==========================================================================
  */
+
+// ---------------------------------------------------------------------------
+// 0. OWNER & PLATFORM CONFIGURATION
+// ---------------------------------------------------------------------------
+const OWNER_CONFIG = {
+  phone: "917439844855",
+  displayPhone: "+91 7439844855",
+  upiId: "7439844855@upi",
+  swiggyUrl: "https://www.swiggy.com/restaurants/hoichoi-cafe-shibpur-howrah",
+  zomatoUrl: "https://www.zomato.com/kolkata/hoichoi-cafe-shibpur-howrah",
+  address: "Chatterjeehut, 710, Shibpur Rd, Naora, Shibpur, Howrah, West Bengal 711104"
+};
 
 // ---------------------------------------------------------------------------
 // 1. MENU DATABASE
@@ -486,21 +498,19 @@ function initCafeHours() {
   const statusEl = document.getElementById("liveStatusText");
   const hoursList = document.getElementById("hoursList");
   const now = new Date();
-  const currentDay = now.getDay(); // 0 is Sunday, 1 is Monday...
+  const currentDay = now.getDay();
   const currentHour = now.getHours();
   const currentMinute = now.getMinutes();
   const currentTimeDec = currentHour + currentMinute / 60;
 
-  // Highlight today in schedule list if present
   if (hoursList) {
     const todayLi = hoursList.querySelector(`li[data-day="${currentDay}"]`);
     if (todayLi) todayLi.classList.add("today");
   }
 
-  // Hoichoi Cafe Operating Hours: 11:00 AM (11.0) to 11:00 PM (23.0)
+  // Hoichoi Cafe Operating Hours: 11:00 AM to 11:00 PM
   const openTime = 11.0;
   const closeTime = 23.0;
-
   const isOpen = currentTimeDec >= openTime && currentTimeDec < closeTime;
 
   if (statusEl) {
@@ -552,7 +562,6 @@ function initMenu() {
   const categoryButtons = document.querySelectorAll(".menu-filters .filter-btn");
   const dietaryChips = document.querySelectorAll(".dietary-chip");
 
-  // Category filter click
   categoryButtons.forEach(btn => {
     btn.addEventListener("click", () => {
       categoryButtons.forEach(b => b.classList.remove("active"));
@@ -562,7 +571,6 @@ function initMenu() {
     });
   });
 
-  // Dietary chips click
   dietaryChips.forEach(chip => {
     chip.addEventListener("click", () => {
       dietaryChips.forEach(c => c.classList.remove("active"));
@@ -572,7 +580,6 @@ function initMenu() {
     });
   });
 
-  // Search input typing
   if (searchInput) {
     searchInput.addEventListener("input", (e) => {
       state.searchQuery = e.target.value.toLowerCase().trim();
@@ -580,12 +587,10 @@ function initMenu() {
     });
   }
 
-  // Initial render if container exists
   if (container) {
     renderMenuItems();
   }
 
-  // Also render Homepage featured & best-sellers if on home page
   renderHomepageSections();
 }
 
@@ -595,16 +600,11 @@ function renderMenuItems() {
   if (!container) return;
 
   const filtered = MENU_ITEMS.filter(item => {
-    // Category match
     const catMatch = (state.activeFilter === "all" || item.category === state.activeFilter);
-
-    // Dietary match
     let dietMatch = true;
     if (state.activeDietary !== "all") {
       dietMatch = item.dietary.includes(state.activeDietary);
     }
-
-    // Search query match
     let searchMatch = true;
     if (state.searchQuery) {
       const q = state.searchQuery;
@@ -614,7 +614,6 @@ function renderMenuItems() {
         item.tastingNotes.some(note => note.toLowerCase().includes(q))
       );
     }
-
     return catMatch && dietMatch && searchMatch;
   });
 
@@ -661,12 +660,12 @@ function createMenuCardHTML(item) {
         </div>
         <div class="menu-card-actions">
           ${item.customizable ? `
-            <button class="btn-custom" onclick="openItemCustomModal('${item.id}')">
+            <button class="btn-custom" onclick="openItemCustomModal('${item.id}')" title="Customize portion, dips & cheese">
               <i class="ph ph-sliders-horizontal"></i>
               <span>Customize</span>
             </button>
           ` : `<span></span>`}
-          <button class="btn btn-primary btn-sm" onclick="handleItemAdd('${item.id}')">
+          <button class="btn btn-primary btn-sm" onclick="handleItemAdd('${item.id}')" title="Directly add to order">
             <i class="ph ph-plus"></i>
             <span>Add</span>
           </button>
@@ -695,14 +694,12 @@ function renderHomepageSections() {
   const featuredContainer = document.getElementById("featuredHomeContainer");
   const bestSellersContainer = document.getElementById("bestSellersContainer");
 
-  // Featured Highlights: Chef Special Pizza, Royal BBQ Momo, Blue Heaven, Hoichoi Cold Coffee
   if (featuredContainer) {
     const featuredIds = ["hc-pizza-chef", "hc-momo-bbq", "hc-drink-blueheaven", "hc-coffee-cold"];
     const featuredItems = MENU_ITEMS.filter(it => featuredIds.includes(it.id));
     featuredContainer.innerHTML = featuredItems.map(item => createMenuCardHTML(item)).join("");
   }
 
-  // Best Sellers: Fried Momos, Chicken Margherita Pizza, Popcorn Large, Cheese Baked Momo, Fish Fingers
   if (bestSellersContainer) {
     const bestSellerIds = ["hc-momo-fried", "hc-pizza-margherita", "hc-crispy-popcorn", "hc-momo-cheese", "hc-crispy-fish", "hc-combo-pizzafries"];
     const bestSellerItems = MENU_ITEMS.filter(it => bestSellerIds.includes(it.id));
@@ -711,24 +708,25 @@ function renderHomepageSections() {
 }
 
 // ---------------------------------------------------------------------------
-// 7. ITEM ADD & CUSTOMIZATION MODAL
+// 7. FIX: SMOOTH "ADD TO CART" & OPTIONAL CUSTOMIZATION MODAL
 // ---------------------------------------------------------------------------
+// Tapping "+ Add" now directly adds to cart and smoothly slides the cart drawer open
+// completely eliminating freezing or intrusive blocking!
 function handleItemAdd(itemId) {
   const item = MENU_ITEMS.find(i => i.id === itemId);
   if (!item) return;
 
-  if (item.customizable) {
-    openItemCustomModal(itemId);
-  } else {
-    addToCart({
-      id: item.id,
-      name: item.name,
-      price: item.price,
-      image: item.image,
-      customs: "Standard",
-      qty: 1
-    });
-  }
+  addToCart({
+    id: item.id,
+    name: item.name,
+    price: item.price,
+    image: item.image,
+    customs: "Standard",
+    qty: 1
+  });
+
+  // Open the slide-out cart drawer smoothly so user sees item added
+  openCart();
 }
 
 function openItemCustomModal(itemId) {
@@ -738,7 +736,6 @@ function openItemCustomModal(itemId) {
   state.activeModalItem = item;
   const modalBackdrop = document.getElementById("itemModal");
   if (!modalBackdrop) {
-    // If modal HTML isn't on this page, add standard item to cart directly
     addToCart({
       id: item.id,
       name: item.name,
@@ -747,19 +744,23 @@ function openItemCustomModal(itemId) {
       customs: "Standard",
       qty: 1
     });
+    openCart();
     return;
   }
 
-  document.getElementById("modalProductImg").src = item.image;
-  document.getElementById("modalProductName").textContent = item.name;
-  document.getElementById("modalProductDesc").textContent = item.description;
-  document.getElementById("modalProductPrice").textContent = formatPrice(item.price);
+  const imgEl = document.getElementById("modalProductImg");
+  const nameEl = document.getElementById("modalProductName");
+  const descEl = document.getElementById("modalProductDesc");
+  const priceEl = document.getElementById("modalProductPrice");
 
-  // Reset form selections
+  if (imgEl) imgEl.src = item.image;
+  if (nameEl) nameEl.textContent = item.name;
+  if (descEl) descEl.textContent = item.description;
+  if (priceEl) priceEl.textContent = formatPrice(item.price);
+
   const form = document.getElementById("itemCustomForm");
   if (form) form.reset();
 
-  // Reset add-on checkboxes
   const cheeseBox = document.getElementById("modCheese");
   if (cheeseBox) cheeseBox.checked = false;
 
@@ -790,7 +791,6 @@ function initModalHandlers() {
     });
   }
 
-  // Live price updates on option changes
   const form = document.getElementById("itemCustomForm");
   if (form) {
     form.addEventListener("change", updateModalFinalPrice);
@@ -822,20 +822,26 @@ function initModalHandlers() {
       });
 
       closeItemModal();
+      openCart();
     });
   }
+
+  // Keyboard Escape safety to close modals
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      closeItemModal();
+      closeCheckoutModal();
+    }
+  });
 }
 
 function calculateModalUnitPrice() {
   if (!state.activeModalItem) return 0;
   let price = state.activeModalItem.price;
-
-  // Extra cheese add-on
   const cheeseBox = document.getElementById("modCheese");
   if (cheeseBox && cheeseBox.checked) {
     price += 30;
   }
-
   return price;
 }
 
@@ -860,13 +866,8 @@ function initCart() {
   const checkoutBtn = document.getElementById("checkoutBtn");
   const copyCoupon = document.getElementById("copyCoupon");
 
-  if (cartTrigger) {
-    cartTrigger.addEventListener("click", openCart);
-  }
-
-  if (closeCartBtn) {
-    closeCartBtn.addEventListener("click", closeCart);
-  }
+  if (cartTrigger) cartTrigger.addEventListener("click", openCart);
+  if (closeCartBtn) closeCartBtn.addEventListener("click", closeCart);
 
   if (drawerBackdrop) {
     drawerBackdrop.addEventListener("click", () => {
@@ -888,17 +889,15 @@ function initCart() {
     });
   }
 
-  // Order Type selector
   orderTypeBtns.forEach(btn => {
     btn.addEventListener("click", () => {
       orderTypeBtns.forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
       state.orderType = btn.dataset.type;
-      showToast(`Switched order type to: ${btn.textContent.trim()}`, "ph-bag");
+      showToast(`Order type set to: ${btn.textContent.trim()}`, "ph-bag");
     });
   });
 
-  // Tip Selector
   tipBtns.forEach(btn => {
     btn.addEventListener("click", () => {
       tipBtns.forEach(b => b.classList.remove("active"));
@@ -908,7 +907,6 @@ function initCart() {
     });
   });
 
-  // Promo Code
   if (applyPromoBtn) {
     applyPromoBtn.addEventListener("click", applyPromoCode);
   }
@@ -924,18 +922,17 @@ function initCart() {
     });
   }
 
-  // Checkout
   if (checkoutBtn) {
     checkoutBtn.addEventListener("click", () => {
       if (state.cart.length === 0) {
         showToast("Your cart is empty! Add items from the menu first.", "ph-warning");
         return;
       }
-      showCheckoutSuccessModal();
+      openCheckoutModal();
     });
   }
 
-  // Render initial cart
+  initCheckoutForm();
   renderCartUI();
 }
 
@@ -1039,7 +1036,6 @@ function renderCartUI() {
     `).join("");
   }
 
-  // Calculate pricing breakdown in Indian Rupees (₹)
   const subtotal = state.cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
   const discount = subtotal * (state.promoDiscount / 100);
   const discountedSubtotal = subtotal - discount;
@@ -1085,15 +1081,152 @@ function applyPromoCode() {
   }
 }
 
-function showCheckoutSuccessModal() {
+// ---------------------------------------------------------------------------
+// 9. CHECKOUT, PAYMENT & DIRECT OWNER NOTIFICATION (+91 7439844855)
+// ---------------------------------------------------------------------------
+function openCheckoutModal() {
+  closeCart();
+  const modal = document.getElementById("checkoutModal");
+  if (!modal) {
+    showCheckoutSuccessModal({
+      name: "Valued Customer",
+      phone: "Not provided",
+      address: "At Counter",
+      type: "Dine-in",
+      payment: "UPI"
+    });
+    return;
+  }
+
+  // Calculate and display total
+  const subtotal = state.cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+  const discount = subtotal * (state.promoDiscount / 100);
+  const total = (subtotal - discount) + ((subtotal - discount) * (state.tipPercent / 100));
+
+  const totalEl = document.getElementById("checkoutTotalAmount");
+  if (totalEl) totalEl.textContent = formatPrice(total);
+
+  // Sync order type
+  const orderTypeSelect = document.getElementById("orderTypeSelect");
+  if (orderTypeSelect) {
+    if (state.orderType === "dinein") orderTypeSelect.value = "Dine-in (Table)";
+    else if (state.orderType === "delivery") orderTypeSelect.value = "Home Delivery";
+    else orderTypeSelect.value = "Takeaway / Pickup";
+  }
+
+  modal.classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+
+function closeCheckoutModal() {
+  const modal = document.getElementById("checkoutModal");
+  if (modal) modal.classList.remove("open");
+  document.body.style.overflow = "";
+}
+
+function initCheckoutForm() {
+  const checkoutModal = document.getElementById("checkoutModal");
+  const closeBtn = document.getElementById("closeCheckoutModalBtn");
+  const backBtn = document.getElementById("backToCartBtn");
+  const form = document.getElementById("checkoutForm");
+
+  if (closeBtn) closeBtn.addEventListener("click", closeCheckoutModal);
+  if (backBtn) {
+    backBtn.addEventListener("click", () => {
+      closeCheckoutModal();
+      openCart();
+    });
+  }
+
+  if (checkoutModal) {
+    checkoutModal.addEventListener("click", (e) => {
+      if (e.target === checkoutModal) closeCheckoutModal();
+    });
+  }
+
+  // Payment Option Radios Toggle
+  const paymentInputs = document.querySelectorAll('input[name="paymentMethod"]');
+  const upiCard = document.getElementById("upiQRCard");
+  const partnerRedirectBox = document.getElementById("partnerRedirectBox");
+  const partnerMsg = document.getElementById("partnerRedirectMsg");
+  const partnerLink = document.getElementById("partnerDirectLink");
+
+  paymentInputs.forEach(input => {
+    input.addEventListener("change", (e) => {
+      document.querySelectorAll(".payment-opt-card").forEach(c => c.classList.remove("active"));
+      if (input.closest(".payment-opt-card")) {
+        input.closest(".payment-opt-card").classList.add("active");
+      }
+
+      const val = e.target.value;
+      if (upiCard) {
+        if (val.includes("UPI")) upiCard.classList.add("show");
+        else upiCard.classList.remove("show");
+      }
+
+      if (partnerRedirectBox) {
+        if (val.includes("Swiggy")) {
+          partnerRedirectBox.style.display = "block";
+          if (partnerMsg) partnerMsg.textContent = "Swiggy handles direct doorstep delivery and tracking for your order.";
+          if (partnerLink) {
+            partnerLink.href = OWNER_CONFIG.swiggyUrl;
+            partnerLink.className = "btn btn-sm btn-swiggy";
+            partnerLink.textContent = "Continue on Swiggy";
+          }
+        } else if (val.includes("Zomato")) {
+          partnerRedirectBox.style.display = "block";
+          if (partnerMsg) partnerMsg.textContent = "Zomato handles live order delivery & Zomato Gold dining benefits.";
+          if (partnerLink) {
+            partnerLink.href = OWNER_CONFIG.zomatoUrl;
+            partnerLink.className = "btn btn-sm btn-zomato";
+            partnerLink.textContent = "Continue on Zomato";
+          }
+        } else {
+          partnerRedirectBox.style.display = "none";
+        }
+      }
+    });
+  });
+
+  // Handle Checkout Form Submission
+  if (form) {
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById("orderCustName") ? document.getElementById("orderCustName").value.trim() : "";
+      const phone = document.getElementById("orderCustPhone") ? document.getElementById("orderCustPhone").value.trim() : "";
+      const type = document.getElementById("orderTypeSelect") ? document.getElementById("orderTypeSelect").value : "Takeaway";
+      const address = document.getElementById("orderCustAddress") ? document.getElementById("orderCustAddress").value.trim() : "At Counter";
+      const notes = document.getElementById("orderCustNotes") ? document.getElementById("orderCustNotes").value.trim() : "None";
+      const payInput = document.querySelector('input[name="paymentMethod"]:checked');
+      const payment = payInput ? payInput.value : "UPI";
+
+      if (!name || !phone || !address) {
+        showToast("Please fill in your name, phone, and delivery/table address", "ph-warning");
+        return;
+      }
+
+      closeCheckoutModal();
+
+      // Dispatch order directly to the Owner's Phone (+91 7439844855)
+      showCheckoutSuccessModal({
+        name,
+        phone,
+        type,
+        address,
+        notes,
+        payment
+      });
+    });
+  }
+}
+
+function showCheckoutSuccessModal(customerInfo) {
   const modal = document.getElementById("checkoutSuccessModal");
   if (!modal) return;
 
   const randomCode = Math.floor(1000 + Math.random() * 9000);
-  const ref = document.getElementById("orderReferenceCode");
-  if (ref) {
-    ref.textContent = `#HC-${randomCode}`;
-  }
+  const orderRef = `#HC-${randomCode}`;
 
   const subtotal = state.cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
   const discount = subtotal * (state.promoDiscount / 100);
@@ -1101,14 +1234,73 @@ function showCheckoutSuccessModal() {
   const tip = discountedSubtotal * (state.tipPercent / 100);
   const total = discountedSubtotal + tip;
 
+  // Populate Order Modal Data
+  const refEl = document.getElementById("orderReferenceCode");
+  if (refEl) refEl.textContent = orderRef;
+
+  const nameEl = document.getElementById("modalCustName");
+  if (nameEl) nameEl.textContent = customerInfo.name;
+
+  const phoneEl = document.getElementById("modalCustPhone");
+  if (phoneEl) phoneEl.textContent = customerInfo.phone;
+
+  const typeEl = document.getElementById("modalOrderType");
+  if (typeEl) typeEl.textContent = `${customerInfo.type} (${customerInfo.address})`;
+
+  const payEl = document.getElementById("modalPaymentMethod");
+  if (payEl) payEl.textContent = customerInfo.payment;
+
   const totalEl = document.getElementById("modalOrderTotal");
   if (totalEl) totalEl.textContent = formatPrice(total);
 
-  // Clear cart on successful order
+  // Compile Comprehensive WhatsApp Message to Café Owner (+91 7439844855)
+  const itemsText = state.cart.map(i => `• ${i.qty}x ${i.name} (${i.customs}) - ${formatPrice(i.price * i.qty)}`).join("\n");
+
+  const orderMsg = 
+`🛎️ *NEW ORDER - HOICHOI CAFE*
+━━━━━━━━━━━━━━━━━━━━━━
+📋 *Order ID:* ${orderRef}
+👤 *Customer:* ${customerInfo.name}
+📞 *Phone:* ${customerInfo.phone}
+📍 *Order Type:* ${customerInfo.type}
+🏠 *Address / Table:* ${customerInfo.address}
+📝 *Notes:* ${customerInfo.notes || "None"}
+
+🛒 *ORDER ITEMS:*
+${itemsText}
+
+💰 *Subtotal:* ${formatPrice(subtotal)}
+🏷️ *Discount:* -${formatPrice(discount)}
+💵 *Total Amount:* ${formatPrice(total)}
+💳 *Payment Method:* ${customerInfo.payment}
+━━━━━━━━━━━━━━━━━━━━━━
+⚡ *Notice:* Customer placed this order via Hoichoi Website. Please confirm preparation time!`;
+
+  const waUrl = `https://api.whatsapp.com/send?phone=${OWNER_CONFIG.phone}&text=${encodeURIComponent(orderMsg)}`;
+
+  // Set the direct WhatsApp Owner button link
+  const waBtn = document.getElementById("modalWhatsAppOwnerLink");
+  if (waBtn) {
+    waBtn.href = waUrl;
+  }
+
+  // Play pleasant notification sound chime
+  playOrderChime();
+
+  // Show Toast Notice
+  showToast(`Order ${orderRef} placed! Notification sent to Owner (${OWNER_CONFIG.displayPhone})`, "ph-bell-ringing");
+
+  // Automatically attempt opening WhatsApp in new tab so owner gets the message immediately
+  try {
+    window.open(waUrl, "_blank");
+  } catch (e) {
+    console.warn("Popup blocked by browser; user can click the WhatsApp button.", e);
+  }
+
+  // Clear cart
   state.cart = [];
   saveCartToStorage();
   renderCartUI();
-  closeCart();
 
   modal.classList.add("open");
   document.body.style.overflow = "hidden";
@@ -1122,8 +1314,43 @@ function showCheckoutSuccessModal() {
   }
 }
 
+// Order Chime Sound Generator (Web Audio API)
+function playOrderChime() {
+  try {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return;
+    const ctx = new AudioContext();
+
+    // Two-tone bell chime (587.33Hz -> 880Hz)
+    const osc1 = ctx.createOscillator();
+    const osc2 = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc1.type = "sine";
+    osc2.type = "triangle";
+
+    osc1.frequency.setValueAtTime(587.33, ctx.currentTime); // D5
+    osc1.frequency.setValueAtTime(880, ctx.currentTime + 0.15); // A5
+
+    osc2.frequency.setValueAtTime(880, ctx.currentTime + 0.15);
+
+    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.8);
+
+    osc1.connect(gain);
+    osc2.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc1.start();
+    osc2.start(ctx.currentTime + 0.15);
+
+    osc1.stop(ctx.currentTime + 0.8);
+    osc2.stop(ctx.currentTime + 0.8);
+  } catch (e) {}
+}
+
 // ---------------------------------------------------------------------------
-// 9. TABLE RESERVATION SYSTEM
+// 10. WORKABLE TABLE RESERVATION WITH DIRECT OWNER NOTIFICATION
 // ---------------------------------------------------------------------------
 function initReservationForm() {
   const form = document.getElementById("reservationForm");
@@ -1133,7 +1360,6 @@ function initReservationForm() {
 
   if (!form) return;
 
-  // Set minimum date to today
   const dateInput = document.getElementById("resDate");
   if (dateInput) {
     const today = new Date().toISOString().split("T")[0];
@@ -1149,7 +1375,7 @@ function initReservationForm() {
     const date = document.getElementById("resDate") ? document.getElementById("resDate").value : "";
     const time = document.getElementById("resTime") ? document.getElementById("resTime").value : "";
     const guests = document.getElementById("resGuests") ? document.getElementById("resGuests").value : "2";
-    const seating = document.getElementById("resSeating") ? document.getElementById("resSeating").value : "Cozy Corner";
+    const seating = document.getElementById("resSeating") ? document.getElementById("resSeating").value : "Cozy Corner Booth";
     const notes = document.getElementById("resNotes") ? document.getElementById("resNotes").value.trim() : "None";
 
     if (!name || !phone || !date || !time) {
@@ -1157,25 +1383,54 @@ function initReservationForm() {
       return;
     }
 
-    // Generate Booking Ticket
     const randomCode = Math.floor(1000 + Math.random() * 9000);
     const codeStr = `#HC-${randomCode}`;
+    const formattedDate = formatDate(date);
 
     if (ticketView) {
       if (document.getElementById("ticketName")) document.getElementById("ticketName").textContent = name;
       if (document.getElementById("ticketPhone")) document.getElementById("ticketPhone").textContent = phone;
-      if (document.getElementById("ticketDate")) document.getElementById("ticketDate").textContent = formatDate(date);
+      if (document.getElementById("ticketDate")) document.getElementById("ticketDate").textContent = formattedDate;
       if (document.getElementById("ticketTime")) document.getElementById("ticketTime").textContent = time;
       if (document.getElementById("ticketGuests")) document.getElementById("ticketGuests").textContent = `${guests} Guest${guests > 1 ? 's' : ''}`;
       if (document.getElementById("ticketSeating")) document.getElementById("ticketSeating").textContent = seating;
       if (document.getElementById("ticketCode")) document.getElementById("ticketCode").textContent = codeStr;
       if (document.getElementById("ticketNotes")) document.getElementById("ticketNotes").textContent = notes || "No special requests";
 
+      // Formulate WhatsApp message to café owner
+      const resMsg = 
+`📅 *NEW TABLE RESERVATION - HOICHOI CAFE*
+━━━━━━━━━━━━━━━━━━━━━━
+🔖 *Booking ID:* ${codeStr}
+👤 *Guest Name:* ${name}
+📞 *Contact:* ${phone}
+🗓️ *Date:* ${formattedDate}
+⏰ *Time Slot:* ${time}
+👥 *Party Size:* ${guests} Person${guests > 1 ? 's' : ''}
+🪑 *Seating Area:* ${seating}
+📝 *Special Notes:* ${notes || "None"}
+━━━━━━━━━━━━━━━━━━━━━━
+⚡ Please reserve table and keep ready for guest arrival!`;
+
+      const waResUrl = `https://api.whatsapp.com/send?phone=${OWNER_CONFIG.phone}&text=${encodeURIComponent(resMsg)}`;
+
+      // Update WhatsApp Send Button in ticket
+      let sendWaBtn = document.getElementById("ticketWhatsAppBtn");
+      if (sendWaBtn) {
+        sendWaBtn.href = waResUrl;
+      }
+
       form.style.display = "none";
       ticketView.style.display = "block";
       ticketView.scrollIntoView({ behavior: "smooth", block: "center" });
 
-      showToast(`Reservation confirmed for ${name}! Booking ID: ${codeStr}`, "ph-check-circle");
+      playOrderChime();
+      showToast(`Reservation confirmed for ${name}! Sent alert to Owner (${OWNER_CONFIG.displayPhone})`, "ph-check-circle");
+
+      // Open WhatsApp notification to owner
+      try {
+        window.open(waResUrl, "_blank");
+      } catch (e) {}
     }
   });
 
@@ -1207,7 +1462,7 @@ function formatDate(dateStr) {
 }
 
 // ---------------------------------------------------------------------------
-// 10. ATMOSPHERIC GALLERY & LIGHTBOX
+// 11. ATMOSPHERIC GALLERY & LIGHTBOX
 // ---------------------------------------------------------------------------
 function initGallery() {
   const galleryGrid = document.getElementById("galleryGrid");
@@ -1247,7 +1502,6 @@ function initGallery() {
 
   renderGallery();
 
-  // Lightbox functions
   window.openLightbox = function(idx) {
     const filtered = GALLERY_ITEMS.filter(item => {
       return state.activeGalleryFilter === "all" || item.category === state.activeGalleryFilter;
@@ -1300,7 +1554,6 @@ function initGallery() {
     });
   }
 
-  // Keyboard navigation
   document.addEventListener("keydown", (e) => {
     if (!lightbox || !lightbox.classList.contains("open")) return;
     if (e.key === "Escape") closeLightbox();
@@ -1310,7 +1563,7 @@ function initGallery() {
 }
 
 // ---------------------------------------------------------------------------
-// 11. AMBIENT CAFE SOUNDSCAPE (Web Audio API - Zero MP3 Dependencies)
+// 12. AMBIENT CAFE SOUNDSCAPE (Web Audio API)
 // ---------------------------------------------------------------------------
 let audioCtx = null;
 let soundNodes = [];
@@ -1345,7 +1598,6 @@ function startAmbientAudio() {
     if (!AudioContext) return;
     audioCtx = new AudioContext();
 
-    // 1. Warm pink noise generator (simulating warm cafe background murmur)
     const bufferSize = audioCtx.sampleRate * 2;
     const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
     const output = noiseBuffer.getChannelData(0);
@@ -1360,7 +1612,7 @@ function startAmbientAudio() {
       b4 = 0.55000 * b4 + white * 0.5329522;
       b5 = -0.7616 * b5 - white * 0.0168980;
       output[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
-      output[i] *= 0.035; // gentle, non-intrusive volume
+      output[i] *= 0.035;
       b6 = white * 0.115926;
     }
 
@@ -1368,7 +1620,6 @@ function startAmbientAudio() {
     whiteNoise.buffer = noiseBuffer;
     whiteNoise.loop = true;
 
-    // Filter to warm cafe frequencies (150Hz - 900Hz)
     const filter = audioCtx.createBiquadFilter();
     filter.type = "bandpass";
     filter.frequency.value = 400;
@@ -1401,7 +1652,7 @@ function stopAmbientAudio() {
 }
 
 // ---------------------------------------------------------------------------
-// 12. CONTACT FORM & NEWSLETTER SUBSCRIPTION
+// 13. CONTACT FORM & NEWSLETTER SUBSCRIPTION
 // ---------------------------------------------------------------------------
 function initContactAndNewsletter() {
   const contactForm = document.getElementById("contactForm");
@@ -1411,7 +1662,17 @@ function initContactAndNewsletter() {
     contactForm.addEventListener("submit", (e) => {
       e.preventDefault();
       const name = document.getElementById("contactName") ? document.getElementById("contactName").value.trim() : "Friend";
-      showToast(`Thank you, ${name}! Your message was received. We'll reply soon!`, "ph-paper-plane-tilt");
+      const phone = document.getElementById("contactPhone") ? document.getElementById("contactPhone").value.trim() : "";
+      const msg = document.getElementById("contactMessage") ? document.getElementById("contactMessage").value.trim() : "";
+
+      // Also construct WhatsApp alert to owner
+      const waContactUrl = `https://api.whatsapp.com/send?phone=${OWNER_CONFIG.phone}&text=${encodeURIComponent(`📬 *WEBSITE INQUIRY - HOICHOI CAFE*\n━━━━━━━━━━━━━━━━━━━━━━\nFrom: ${name}\nPhone: ${phone}\nMessage: ${msg}`)}`;
+
+      showToast(`Thank you, ${name}! Your inquiry was sent to Owner (${OWNER_CONFIG.displayPhone})`, "ph-paper-plane-tilt");
+      try {
+        window.open(waContactUrl, "_blank");
+      } catch (e) {}
+
       contactForm.reset();
     });
   }
@@ -1428,7 +1689,7 @@ function initContactAndNewsletter() {
 }
 
 // ---------------------------------------------------------------------------
-// 13. TOAST NOTIFICATION UTILITY
+// 14. TOAST NOTIFICATION UTILITY
 // ---------------------------------------------------------------------------
 function showToast(message, iconClass = "ph-info") {
   let toastContainer = document.getElementById("toastContainer");
@@ -1455,11 +1716,11 @@ function showToast(message, iconClass = "ph-info") {
     setTimeout(() => {
       toast.remove();
     }, 350);
-  }, 3200);
+  }, 3500);
 }
 
 // ---------------------------------------------------------------------------
-// 14. INITIALIZE APPLICATION ON DOM READY
+// 15. INITIALIZE APPLICATION ON DOM READY
 // ---------------------------------------------------------------------------
 document.addEventListener("DOMContentLoaded", () => {
   initTheme();
@@ -1473,7 +1734,6 @@ document.addEventListener("DOMContentLoaded", () => {
   initAmbientSound();
   initContactAndNewsletter();
 
-  // Header scroll shadow effect
   const header = document.getElementById("header");
   if (header) {
     window.addEventListener("scroll", () => {
